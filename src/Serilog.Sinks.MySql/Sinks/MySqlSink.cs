@@ -81,32 +81,18 @@ namespace Serilog.Sinks.MySql.Sinks
 
         private async Task Insert(IEnumerable<LogEvent> events, MySqlConnection connection)
         {
-            using (var trx = connection.BeginTransaction())
+            var commandText = _core.GetInsertCommandText();
+
+            foreach (var log in events)
             {
-                try
+                using (var cmd = new MySqlCommand(commandText, connection))
                 {
-                    var commandText = _core.GetInsertCommandText();
-
-                    foreach (var log in events)
+                    foreach (var (column, value) in _core.GetColumnsAndValues(log))
                     {
-                        using (var cmd = new MySqlCommand(commandText, connection, trx))
-                        {
-                            foreach (var (column, value) in _core.GetColumnsAndValues(log))
-                            {
-                                cmd.Parameters.AddWithValue(column, value);
-                            }
-
-                            await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-                        }
+                        cmd.Parameters.AddWithValue(column, value);
                     }
 
-
-                    await trx.CommitAsync().ConfigureAwait(false);
-                }
-                catch
-                {
-                    await trx.RollbackAsync().ConfigureAwait(false);
-                    throw;
+                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 }
             }
         }

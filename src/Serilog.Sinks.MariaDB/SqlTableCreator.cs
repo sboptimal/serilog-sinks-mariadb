@@ -2,7 +2,7 @@
 using System.Text;
 using MySql.Data.MySqlClient;
 
-namespace Serilog.Sinks.MySql
+namespace Serilog.Sinks.MariaDB
 {
     internal class SqlTableCreator
     {

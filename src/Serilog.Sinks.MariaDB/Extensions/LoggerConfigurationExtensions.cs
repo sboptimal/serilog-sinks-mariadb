@@ -1,19 +1,19 @@
 ﻿using System;
 using Serilog.Configuration;
 using Serilog.Events;
-using Serilog.Sinks.MySql.Sinks;
+using Serilog.Sinks.MariaDB.Sinks;
 
-namespace Serilog.Sinks.MySql.Extensions
+namespace Serilog.Sinks.MariaDB.Extensions
 {
     public static class LoggerConfigurationExtensions
     {
-        public static LoggerConfiguration MySql(
+        public static LoggerConfiguration MariaDB(
             this LoggerSinkConfiguration loggerConfiguration,
             string connectionString,
             IFormatProvider formatProvider = null,
-            int batchPostingLimit = MySqlSink.DefaultBatchPostingLimit,
+            int batchPostingLimit = MariaDBSink.DefaultBatchPostingLimit,
             TimeSpan? period = null,
-            MySqlSinkOptions options = null,
+            MariaDBSinkOptions options = null,
             string tableName = "Logs",
             bool autoCreateTable = false,
             bool useBulkInsert = true,
@@ -26,12 +26,12 @@ namespace Serilog.Sinks.MySql.Extensions
             }
 
             return loggerConfiguration.Sink(
-                new MySqlSink(
+                new MariaDBSink(
                     connectionString,
                     formatProvider,
                     batchPostingLimit,
-                    period ?? MySqlSink.DefaultPeriod,
-                    options ?? new MySqlSinkOptions(),
+                    period ?? MariaDBSink.DefaultPeriod,
+                    options ?? new MariaDBSinkOptions(),
                     tableName,
                     autoCreateTable,
                     useBulkInsert
@@ -40,11 +40,11 @@ namespace Serilog.Sinks.MySql.Extensions
             );
         }
 
-        public static LoggerConfiguration MySql(
+        public static LoggerConfiguration MariaDB(
             this LoggerAuditSinkConfiguration loggerAuditConfiguration,
             string connectionString,
             IFormatProvider formatProvider = null,
-            MySqlSinkOptions options = null,
+            MariaDBSinkOptions options = null,
             string tableName = "Logs",
             bool autoCreateTable = false,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum
@@ -56,10 +56,10 @@ namespace Serilog.Sinks.MySql.Extensions
             }
 
             return loggerAuditConfiguration.Sink(
-                new MySqlAuditSink(
+                new MariaDBAuditSink(
                     connectionString,
                     formatProvider,
-                    options ?? new MySqlSinkOptions(),
+                    options ?? new MariaDBSinkOptions(),
                     tableName,
                     autoCreateTable
                 ),

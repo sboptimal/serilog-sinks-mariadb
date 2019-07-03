@@ -5,9 +5,9 @@ using System.Text;
 using Serilog.Events;
 using Serilog.Formatting.Json;
 
-namespace Serilog.Sinks.MySql
+namespace Serilog.Sinks.MariaDB
 {
-    public class MySqlSinkOptions
+    public class MariaDBSinkOptions
     {
         public Dictionary<string, string> PropertiesToColumnsMapping { get; set; } = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
         {

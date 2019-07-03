@@ -4,24 +4,24 @@ using Serilog.Core;
 using Serilog.Debugging;
 using Serilog.Events;
 
-namespace Serilog.Sinks.MySql.Sinks
+namespace Serilog.Sinks.MariaDB.Sinks
 {
-    public class MySqlAuditSink : ILogEventSink
+    public class MariaDBAuditSink : ILogEventSink
     {
         private readonly string _connectionString;
-        private readonly MySqlSinkCore _core;
+        private readonly MariaDBSinkCore _core;
 
-        public MySqlAuditSink(
+        public MariaDBAuditSink(
             string connectionString,
             IFormatProvider formatProvider,
-            MySqlSinkOptions options,
+            MariaDBSinkOptions options,
             string tableName,
             bool autoCreateTable
         )
         {
             _connectionString = connectionString;
 
-            _core = new MySqlSinkCore(connectionString, formatProvider, options, tableName, autoCreateTable);
+            _core = new MariaDBSinkCore(connectionString, formatProvider, options, tableName, autoCreateTable);
         }
 
         public void Emit(LogEvent logEvent)

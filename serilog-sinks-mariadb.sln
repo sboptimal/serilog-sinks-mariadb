@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{35F687F1-5A34-4A8A-954C-1501E527C277}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Sinks.MySql", "src\Serilog.Sinks.MySql\Serilog.Sinks.MySql.csproj", "{1DC2F81C-C077-4369-92BF-BC9E3D9A63AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Sinks.MariaDB", "src\Serilog.Sinks.MariaDB\Serilog.Sinks.MariaDB.csproj", "{1DC2F81C-C077-4369-92BF-BC9E3D9A63AB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AE130665-0D46-4326-9310-41D32B820643}"
 	ProjectSection(SolutionItems) = preProject

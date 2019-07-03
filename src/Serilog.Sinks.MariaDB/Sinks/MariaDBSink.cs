@@ -7,23 +7,23 @@ using Serilog.Debugging;
 using Serilog.Events;
 using Serilog.Sinks.PeriodicBatching;
 
-namespace Serilog.Sinks.MySql.Sinks
+namespace Serilog.Sinks.MariaDB.Sinks
 {
-    public class MySqlSink : PeriodicBatchingSink
+    public class MariaDBSink : PeriodicBatchingSink
     {
         public const int DefaultBatchPostingLimit = 50;
         public static readonly TimeSpan DefaultPeriod = TimeSpan.FromSeconds(5);
 
         private readonly string _connectionString;
-        private readonly MySqlSinkCore _core;
+        private readonly MariaDBSinkCore _core;
         private readonly bool _useBulkInsert;
 
-        public MySqlSink(
+        public MariaDBSink(
             string connectionString,
             IFormatProvider formatProvider,
             int batchPostingLimit,
             TimeSpan period,
-            MySqlSinkOptions options,
+            MariaDBSinkOptions options,
             string tableName,
             bool autoCreateTable,
             bool useBulkInsert
@@ -32,7 +32,7 @@ namespace Serilog.Sinks.MySql.Sinks
             _connectionString = connectionString;
             _useBulkInsert = useBulkInsert;
 
-            _core = new MySqlSinkCore(connectionString, formatProvider, options, tableName, autoCreateTable);
+            _core = new MariaDBSinkCore(connectionString, formatProvider, options, tableName, autoCreateTable);
         }
 
         protected override async Task EmitBatchAsync(IEnumerable<LogEvent> events)

@@ -1,6 +1,6 @@
-# serilog-sinks-mysql
+# serilog-sinks-mariadb
 
-A Serilog sink that writes events to MySQL/MariaDB. This sink will write the log event to a table. Important properties can also be written to their own separate columns. Properties by default are written to Text column and are formatted as JSON (custom formatter can be provided for them). This sink was hugelly inspired by [MSSqlServer sink](https://github.com/serilog/serilog-sinks-mssqlserver).
+A Serilog sink that writes events to MariaDB/MySQL. This sink will write the log event to a table. Important properties can also be written to their own separate columns. Properties by default are written to Text column and are formatted as JSON (custom formatter can be provided for them). This sink was hugelly inspired by [MSSqlServer sink](https://github.com/serilog/serilog-sinks-mssqlserver).
 
 ### Configuration Samples
 
@@ -10,23 +10,23 @@ All sink features are configurable from code.
 
 ```csharp
 var log = new LoggerConfiguration()
-    .WriteTo.MySql(
+    .WriteTo.MariaDB(
         connectionString: @"server=...",
         tableName: "Logs",
         autoCreateTable: true,
         useBulkInsert: false,
-        options: new MySqlSinkOptions()
+        options: new MariaDBSinkOptions()
         )
     .CreateLogger();
 ```
 
 ```csharp
 var log = new LoggerConfiguration()
-    .AuditTo.MySql(
+    .AuditTo.MariaDB(
         connectionString: @"server=...",
         tableName: "Logs",
         autoCreateTable: true,
-        options: new MySqlSinkOptions()
+        options: new MariaDBSinkOptions()
         )
     .CreateLogger();
 ```
@@ -39,12 +39,12 @@ They also can be configured through _Microsoft.Extensions.Configuration_ sources
 {
     "Serilog": {
         "Using": [
-            "Serilog.Sinks.MySql"
+            "Serilog.Sinks.MariaDB"
         ],
         "MinimumLevel": "Debug",
         "WriteTo": [
             {
-                "Name": "MySql",
+                "Name": "MariaDB",
                 "Args": {
                     "connectionString": "server=...",
                     "autoCreateTable": false,
@@ -76,12 +76,12 @@ They also can be configured through _Microsoft.Extensions.Configuration_ sources
 {
     "Serilog": {
         "Using": [
-            "Serilog.Sinks.MySql"
+            "Serilog.Sinks.MariaDB"
         ],
         "MinimumLevel": "Debug",
         "AuditTo": [
             {
-                "Name": "MySql",
+                "Name": "MariaDB",
                 "Args": {
                     "connectionString": "server=...",
                     "autoCreateTable": false,
@@ -124,19 +124,19 @@ At minimum, `connectionString` is required.
 
 If `tableName` is omitted, it defaults to `Logs`.
 
-If `autoCreateTable` is `true` (defaults to `false`), the sink will create a basic table by `tableName` name if it doesn't yet exist. The table will have all the columns provided in `MySqlSinkOptions.PropertiesToColumnsMapping`. All of them will be created as `TEXT` columns, it's users responsibility to change them to the correct data type.
+If `autoCreateTable` is `true` (defaults to `false`), the sink will create a basic table by `tableName` name if it doesn't yet exist. The table will have all the columns provided in `MariaDBSinkOptions.PropertiesToColumnsMapping`. All of them will be created as `TEXT` columns, it's users responsibility to change them to the correct data type.
 
 If `useBulkInsert` is `true` (defaults to `true`), the batch will be inserted as single bulk insert operation, otherwise (if set to `false`) it will insert log events one by one. Tests were performed with 5000 entries, the average for bulk insert was 0.787s, and for separate inserts it was 42.833s. The tradeoff here is - with separate insert statements you wont loose that much of data on failure. If you choose to use bulk inserts - be carefull regarding `max_allowed_packet` which determines maximum single SQL statement, that is sent to the server, size in bytes. Depending on your table structure insert statements can vary, so you must determine the batch size accordingly.
 
 Like other sinks, `restrictedToMinimumLevel` controls the `LogEventLevel` messages that are processed by this sink.
 
-This is a "periodic batching sink." The sink will queue a certain number of log events before they're actually written to MySQL/MariaDB as a bulk insert operation. There is also a timeout period so that the batch is always written even if it has not been filled. By default, the batch size is 50 rows and the timeout is 5 seconds. You can change these through by setting the `batchPostingLimit` and `period` arguments.
+This is a "periodic batching sink." The sink will queue a certain number of log events before they're actually written to MariaDB/MySQL as a bulk insert operation. There is also a timeout period so that the batch is always written even if it has not been filled. By default, the batch size is 50 rows and the timeout is 5 seconds. You can change these through by setting the `batchPostingLimit` and `period` arguments.
 
 Refer to the Serilog Wiki's explanation of [Format Providers](https://github.com/serilog/serilog/wiki/Formatting-Output#format-providers) for details about the `formatProvider` arguments.
 
-## MySqlSinkOptions Object
+## MariaDBSinkOptions Object
 
-Features of the log table and how we persist data are defined by changing properties on a `MySqlSinkOptions` object:
+Features of the log table and how we persist data are defined by changing properties on a `MariaDBSinkOptions` object:
 
 * `PropertiesToColumnsMapping`
 * `PropertiesFormatter`

@@ -7,18 +7,18 @@ using System.Text;
 using Serilog.Debugging;
 using Serilog.Events;
 
-namespace Serilog.Sinks.MySql.Sinks
+namespace Serilog.Sinks.MariaDB.Sinks
 {
-    internal sealed class MySqlSinkCore
+    internal sealed class MariaDBSinkCore
     {
         private readonly string _tableName;
         private readonly IFormatProvider _formatProvider;
-        private readonly MySqlSinkOptions _options;
+        private readonly MariaDBSinkOptions _options;
 
-        public MySqlSinkCore(
+        public MariaDBSinkCore(
             string connectionString,
             IFormatProvider formatProvider,
-            MySqlSinkOptions options,
+            MariaDBSinkOptions options,
             string tableName,
             bool autoCreateTable
         )

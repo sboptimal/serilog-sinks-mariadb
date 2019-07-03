@@ -11,23 +11,23 @@ All sink features are configurable from code.
 ```csharp
 var log = new LoggerConfiguration()
     .WriteTo.MySql(
-    	connectionString: @"server=...",
-    	tableName: "Logs",
-    	autoCreateTable: true,
-    	useBulkInsert: false,
-    	options: new MySqlSinkOptions()
-    	)
+        connectionString: @"server=...",
+        tableName: "Logs",
+        autoCreateTable: true,
+        useBulkInsert: false,
+        options: new MySqlSinkOptions()
+        )
     .CreateLogger();
 ```
 
 ```csharp
 var log = new LoggerConfiguration()
     .AuditTo.MySql(
-    	connectionString: @"server=...",
-    	tableName: "Logs",
-    	autoCreateTable: true,
-    	options: new MySqlSinkOptions()
-    	)
+        connectionString: @"server=...",
+        tableName: "Logs",
+        autoCreateTable: true,
+        options: new MySqlSinkOptions()
+        )
     .CreateLogger();
 ```
 
@@ -149,7 +149,7 @@ Features of the log table and how we persist data are defined by changing proper
 This is a dictionary of all the columns. The key is what we take from the log event, while the value is column name in the database. Here you can include custom columns also, that are taken from the log event `Properties` object. Default value for `PropertiesToColumnsMapping` is shown below.
 
 ```csharp
-var propertiesToColumns = new Dictionary<string, string>()
+var propertiesToColumns = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
         {
             ["Exception"] = "Exception",
             ["Level"] = "LogLevel",
@@ -184,12 +184,12 @@ If you don't use automatic creation of the table, you'll have to create a log ev
 
 ```sql
 CREATE TABLE IF NOT EXISTS `Logs` (
-	`Timestamp` TEXT NULL,
-	`Level` TEXT NULL,
-	`Message` TEXT NULL,
-	`MessageTemplate` TEXT NULL,
-	`Exception` TEXT NULL,
-	`Properties` TEXT NULL
+    `Timestamp` TEXT NULL,
+    `Level` TEXT NULL,
+    `Message` TEXT NULL,
+    `MessageTemplate` TEXT NULL,
+    `Exception` TEXT NULL,
+    `Properties` TEXT NULL
 )
 ```
 
@@ -197,12 +197,12 @@ But the definition below would make more sense for initial database.
 
 ```sql
 CREATE TABLE IF NOT EXISTS `Logs` (
-	`Timestamp` DATETIME DEFAULT NULL,
-	`Level` VARCHAR(15) DEFAULT NULL,
-	`Message` TEXT NULL,
-	`MessageTemplate` TEXT NULL,
-	`Exception` TEXT NULL,
-	`Properties` TEXT NULL
+    `Timestamp` DATETIME DEFAULT NULL,
+    `Level` VARCHAR(15) DEFAULT NULL,
+    `Message` TEXT NULL,
+    `MessageTemplate` TEXT NULL,
+    `Exception` TEXT NULL,
+    `Properties` TEXT NULL
 )
 ```
 

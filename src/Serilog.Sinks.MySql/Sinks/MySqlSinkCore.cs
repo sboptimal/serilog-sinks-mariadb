@@ -66,7 +66,7 @@ namespace Serilog.Sinks.MySql.Sinks
 
         private IEnumerable<(string, object)> GetStandardColumnNamesAndValues(LogEvent logEvent)
         {
-            foreach (var map in _options.PropertiesToColumnsMapping) //TODO: test how our lib works with Serilog.Exceptions enricher
+            foreach (var map in _options.PropertiesToColumnsMapping)
             {
                 if (map.Key.Equals("Message", StringComparison.InvariantCultureIgnoreCase))
                 {

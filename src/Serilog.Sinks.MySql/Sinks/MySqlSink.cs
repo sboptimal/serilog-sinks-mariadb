@@ -85,14 +85,21 @@ namespace Serilog.Sinks.MySql.Sinks
 
             foreach (var log in events)
             {
-                using (var cmd = new MySqlCommand(commandText, connection))
+                try
                 {
-                    foreach (var (column, value) in _core.GetColumnsAndValues(log))
+                    using (var cmd = new MySqlCommand(commandText, connection))
                     {
-                        cmd.Parameters.AddWithValue(column, value);
-                    }
+                        foreach (var (column, value) in _core.GetColumnsAndValues(log))
+                        {
+                            cmd.Parameters.AddWithValue(column, value);
+                        }
 
-                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    SelfLog.WriteLine("Unable to write log event to the database due to following error: {0}", ex.Message);
                 }
             }
         }

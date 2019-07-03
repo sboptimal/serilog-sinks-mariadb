@@ -66,40 +66,53 @@ namespace Serilog.Sinks.MySql.Sinks
 
         private IEnumerable<(string, object)> GetStandardColumnNamesAndValues(LogEvent logEvent)
         {
-            foreach (var map in _options.PropertiesToColumnsMapping)
+            foreach (var map in _options.PropertiesToColumnsMapping) //TODO: test how our lib works with Serilog.Exceptions enricher
             {
-                switch (map.Key)
+                if (map.Key.Equals("Message", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    case "Message":
-                        yield return (map.Value, logEvent.RenderMessage(_formatProvider));
-                        break;
-                    case "MessageTemplate":
-                        yield return (map.Value, logEvent.MessageTemplate.Text);
-                        break;
-                    case "Level":
-                        yield return (map.Value, _options.EnumsAsInts ? (object)logEvent.Level : logEvent.Level.ToString());
-                        break;
-                    case "Timestamp":
-                        yield return (map.Value, _options.TimestampInUtc ? logEvent.Timestamp.ToUniversalTime().DateTime : logEvent.Timestamp.DateTime);
-                        break;
-                    case "Exception":
-                        yield return (map.Value, logEvent.Exception?.ToString());
-                        break;
-                    case "Properties":
-                        var properties = logEvent.Properties.AsEnumerable();
+                    yield return (map.Value, logEvent.RenderMessage(_formatProvider));
+                    continue;
+                }
 
-                        if (_options.ExcludePropertiesWithDedicatedColumn)
-                        {
-                            properties = properties
-                                .Where(i => !_options.PropertiesToColumnsMapping.ContainsKey(i.Key));
-                        }
-                        
-                        yield return (map.Value, _options.PropertiesFormatter(
-                            new ReadOnlyDictionary<string, LogEventPropertyValue>(
-                                properties.ToDictionary(k => k.Key, v => v.Value)
-                                )
-                            ));
-                        break;
+                if (map.Key.Equals("MessageTemplate", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    yield return (map.Value, logEvent.MessageTemplate.Text);
+                    continue;
+                }
+
+                if (map.Key.Equals("Level", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    yield return (map.Value, _options.EnumsAsInts ? (object)logEvent.Level : logEvent.Level.ToString());
+                    continue;
+                }
+
+                if (map.Key.Equals("Timestamp", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    yield return (map.Value, _options.TimestampInUtc ? logEvent.Timestamp.ToUniversalTime().DateTime : logEvent.Timestamp.DateTime);
+                    continue;
+                }
+
+                if (map.Key.Equals("Exception", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    yield return (map.Value, logEvent.Exception?.ToString());
+                    continue;
+                }
+
+                if (map.Key.Equals("Properties", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var properties = logEvent.Properties.AsEnumerable();
+
+                    if (_options.ExcludePropertiesWithDedicatedColumn)
+                    {
+                        properties = properties
+                            .Where(i => !_options.PropertiesToColumnsMapping.ContainsKey(i.Key));
+                    }
+
+                    yield return (map.Value, _options.PropertiesFormatter(
+                        new ReadOnlyDictionary<string, LogEventPropertyValue>(
+                            properties.ToDictionary(k => k.Key, v => v.Value)
+                        )
+                    ));
                 }
             }
         }

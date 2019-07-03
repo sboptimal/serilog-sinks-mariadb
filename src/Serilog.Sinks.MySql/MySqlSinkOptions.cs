@@ -9,7 +9,7 @@ namespace Serilog.Sinks.MySql
 {
     public class MySqlSinkOptions
     {
-        public Dictionary<string, string> PropertiesToColumnsMapping { get; set; } = new Dictionary<string, string>()
+        public Dictionary<string, string> PropertiesToColumnsMapping { get; set; } = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
         {
             ["Exception"] = "Exception",
             ["Level"] = "LogLevel",

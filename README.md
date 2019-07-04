@@ -4,7 +4,7 @@ A Serilog sink that writes events to **MariaDB/MySQL**. This sink will write the
 
 This sink inherits from [`PeriodicBatching` Sink](https://github.com/serilog/serilog-sinks-periodicbatching) - events can be inserted as bulk for performance gains or one by one for reliability.
 
-Nuget Package: [Serilog.Sinks.MariaDB](https://www.nuget.org/packages/Serilog.Sinks.MariaDB/)
+**Nuget Package:** [Serilog.Sinks.MariaDB](https://www.nuget.org/packages/Serilog.Sinks.MariaDB/)
 
 ### Configuration Samples
 
@@ -168,7 +168,7 @@ For example:
 
 ```csharp
 //Remove built-in Exception mapping, because we have our custom custom "ExceptionDetails" property
-propertiesToColumns.Remove("Exception);
+propertiesToColumns.Remove("Exception");
 propertiesToColumns["ExceptionDetails"] = "Exception";
 
 //Save Timestamp in custom column

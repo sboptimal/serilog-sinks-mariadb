@@ -37,6 +37,7 @@ namespace Serilog.Sinks.MariaDB
             var i = 1;
 
             sql.AppendLine($"CREATE TABLE IF NOT EXISTS `{_tableName}` ( ");
+            sql.AppendLine("`Id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,");
 
             foreach (var column in _columns)
             {

@@ -69,9 +69,9 @@ namespace Serilog.Sinks.MariaDB.Sinks
             {
                 for (var i = 0; i < events.Count; i++)
                 {
-                    foreach (var (column, value) in _core.GetColumnsAndValues(events[i]))
+                    foreach (var columnValue in _core.GetColumnsAndValues(events[i]))
                     {
-                        cmd.Parameters.AddWithValue($"{column}{i}", value);
+                        cmd.Parameters.AddWithValue($"{columnValue.Key}{i}", columnValue.Value);
                     }
                 }
 
@@ -89,9 +89,9 @@ namespace Serilog.Sinks.MariaDB.Sinks
                 {
                     using (var cmd = new MySqlCommand(commandText, connection))
                     {
-                        foreach (var (column, value) in _core.GetColumnsAndValues(log))
+                        foreach (var columnValue in _core.GetColumnsAndValues(log))
                         {
-                            cmd.Parameters.AddWithValue(column, value);
+                            cmd.Parameters.AddWithValue(columnValue.Key, columnValue.Value);
                         }
 
                         await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);

@@ -9,7 +9,7 @@ namespace Serilog.Sinks.MariaDB
 {
     public class MariaDBSinkOptions
     {
-        public Dictionary<string, string> PropertiesToColumnsMapping { get; set; } = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+        public Dictionary<string, string> PropertiesToColumnsMapping { get; set; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             ["Exception"] = "Exception",
             ["Level"] = "LogLevel",

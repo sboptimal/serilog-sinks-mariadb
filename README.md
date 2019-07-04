@@ -200,6 +200,7 @@ If you don't use automatic creation of the table, you'll have to create a log ev
 
 ```sql
 CREATE TABLE IF NOT EXISTS `Logs` (
+    `Id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `Timestamp` TEXT NULL,
     `Level` TEXT NULL,
     `Message` TEXT NULL,
@@ -213,6 +214,7 @@ But you probably want to change it to:
 
 ```sql
 CREATE TABLE IF NOT EXISTS `Logs` (
+    `Id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `Timestamp` DATETIME DEFAULT NULL,
     `Level` VARCHAR(15) DEFAULT NULL,
     `Message` TEXT NULL,

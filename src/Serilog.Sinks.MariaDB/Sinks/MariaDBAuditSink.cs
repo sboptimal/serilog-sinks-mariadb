@@ -36,9 +36,9 @@ namespace Serilog.Sinks.MariaDB.Sinks
 
                     using (var cmd = new MySqlCommand(commandText, conn))
                     {
-                        foreach (var (column, value) in _core.GetColumnsAndValues(logEvent))
+                        foreach (var columnValue in _core.GetColumnsAndValues(logEvent))
                         {
-                            cmd.Parameters.AddWithValue(column, value);
+                            cmd.Parameters.AddWithValue(columnValue.Key, columnValue.Value);
                         }
 
                         cmd.ExecuteNonQuery();

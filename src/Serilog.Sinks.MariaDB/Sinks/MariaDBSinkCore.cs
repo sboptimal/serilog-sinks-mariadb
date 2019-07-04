@@ -141,36 +141,53 @@ namespace Serilog.Sinks.MariaDB.Sinks
             }
         }
 
-        public string GetInsertCommandText(int rows = 0)
+        public string GetBulkInsertStatement(IList<IEnumerable<KeyValuePair<string, object>>> columnValues)
         {
-            var commandBuilder = new StringBuilder();
+            var commandText = new StringBuilder();
+            AppendInsertStatement(commandText);
+
+            for (var i = 0; i < columnValues.Count; i++)
+            {
+                if (i != 0)
+                {
+                    commandText.AppendLine(",");
+                }
+
+                AppendValuesPart(commandText, columnValues[i], i);
+            }
+
+            return commandText.ToString();
+        }
+
+        public string GetInsertStatement(IEnumerable<KeyValuePair<string, object>> columnValues)
+        {
+            var commandText = new StringBuilder();
+
+            AppendInsertStatement(commandText);
+            AppendValuesPart(commandText, columnValues);
+
+            return commandText.ToString();
+        }
+
+        public void AppendInsertStatement(StringBuilder output)
+        {
             var columnNames = _options.PropertiesToColumnsMapping
                 .Select(i => i.Value)
                 .ToList();
 
-            commandBuilder.AppendLine($"INSERT INTO {_tableName} ({string.Join(", ", columnNames)})");
-            commandBuilder.AppendLine($"VALUES");
+            output.AppendLine($"INSERT INTO {_tableName} ({string.Join(", ", columnNames)})");
+            output.AppendLine("VALUES");
+        }
 
-            if (rows == 0)
-            {
-                commandBuilder.Append("(");
-                commandBuilder.AppendLine(string.Join(", ", columnNames.Select(param => $"@{param}")));
-                commandBuilder.Append(")");
-            }
+        public void AppendValuesPart(StringBuilder output, IEnumerable<KeyValuePair<string, object>> columnValues, int? identifier = null)
+        {
+            var parameters = columnValues
+                .Select(i => i.Value == null ? "DEFAULT" : $"@{i.Key}{(identifier.HasValue ? identifier.ToString() : "")}")
+                .ToList();
 
-            for (var i = 0; i < rows; i++)
-            {
-                commandBuilder.Append("(");
-                commandBuilder.Append(string.Join(", ", columnNames.Select(param => $"@{param}{i}")));
-                commandBuilder.Append(")");
-
-                if (i != rows - 1)
-                {
-                    commandBuilder.AppendLine(",");
-                }
-            }
-
-            return commandBuilder.ToString();
+            output.Append("(");
+            output.Append(string.Join(", ", parameters));
+            output.Append(")");
         }
     }
 }

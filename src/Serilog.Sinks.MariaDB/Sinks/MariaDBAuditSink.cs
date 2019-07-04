@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using MySql.Data.MySqlClient;
 using Serilog.Core;
 using Serilog.Debugging;
@@ -32,13 +33,17 @@ namespace Serilog.Sinks.MariaDB.Sinks
                 {
                     conn.Open();
 
-                    var commandText = _core.GetInsertCommandText();
+                    var columnValues = _core.GetColumnsAndValues(logEvent).ToList();
+                    var commandText = _core.GetInsertStatement(columnValues);
 
                     using (var cmd = new MySqlCommand(commandText, conn))
                     {
-                        foreach (var columnValue in _core.GetColumnsAndValues(logEvent))
+                        foreach (var columnValue in columnValues)
                         {
-                            cmd.Parameters.AddWithValue(columnValue.Key, columnValue.Value);
+                            if (columnValue.Value != null)
+                            {
+                                cmd.Parameters.AddWithValue(columnValue.Key, columnValue.Value);
+                            }
                         }
 
                         cmd.ExecuteNonQuery();

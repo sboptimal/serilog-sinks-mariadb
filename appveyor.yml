@@ -2,7 +2,7 @@ version: '{build}'
 branches:
   only:
     - master
-    - dev
+    - /^release/
 skip_tags: false
 skip_branch_with_pr: true
 image: Visual Studio 2019
@@ -18,11 +18,11 @@ deploy:
       secure: Cd22jW/zRz23GZ26YyIRJQrGUUA8+ZhPB6tH8Kl98Im75hk/vpJJnBpqzF03da9L
     skip_symbols: true
     on:
-      branch: /^(master|dev)$/
+      branch: /^(master|release)/
   - provider: GitHub
     auth_token:
       secure: DrLV7LYcBmi9YVEip+ZVfbpnn/7P/UHac+veTjG1vs0RPi6PuJSPmokHGhdmYGd5
     artifact: /Serilog.*\.nupkg/
     tag: v$(appveyor_build_version)
     on:
-      appveyor_repo_tag: true
+      branch: /^release/

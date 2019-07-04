@@ -8,7 +8,7 @@
     <PackageProjectUrl>https://github.com/TeleSoftas/serilog-sinks-mariadb</PackageProjectUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Authors>miezis, TeleSoftas</Authors>
-    <Description>A Serilog sink that writes events to MariaDB/MySQL</Description>
+    <Description>A Serilog sink that writes events to MariaDB and MySQL. Supports audit, batching and custom columns</Description>
     <RepositoryType>git</RepositoryType>
     <Company>TeleSoftas</Company>
   </PropertyGroup>

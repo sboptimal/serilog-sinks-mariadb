@@ -6,7 +6,7 @@
     <PackageTags>serilog sinks sink mysql mariadb</PackageTags>
     <RepositoryUrl>https://github.com/TeleSoftas/serilog-sinks-mariadb</RepositoryUrl>
     <PackageProjectUrl>https://github.com/TeleSoftas/serilog-sinks-mariadb</PackageProjectUrl>
-    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Authors>miezis, TeleSoftas</Authors>
     <Description>A Serilog sink that writes events to MariaDB/MySQL</Description>
     <RepositoryType>git</RepositoryType>

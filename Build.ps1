@@ -13,7 +13,7 @@ $branch = @{ $true = $env:APPVEYOR_REPO_BRANCH; $false = $(git symbolic-ref --sh
 $revision = @{ $true = "{0:00000}" -f [convert]::ToInt32("0" + $env:APPVEYOR_BUILD_NUMBER, 10); $false = "local" }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
 $suffix = @{ $true = ""; $false = "preview-$revision"}[$branch -ne "master"]
 $commitHash = $(git rev-parse --short HEAD)
-$buildSuffix = @{ $true = "$($suffix)-$($commitHash)"; $false = "$($branch)-$($commitHash)" }[$suffix -ne ""]
+$buildSuffix = @{ $true = "$($suffix)-$($commitHash)"; $false = $commitHash }[$suffix -ne ""]
 
 echo "build: Package version suffix is $suffix"
 echo "build: Build version suffix is $buildSuffix" 

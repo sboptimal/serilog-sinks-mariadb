@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Serilog.Debugging;
 using Serilog.Events;
@@ -51,54 +52,41 @@ namespace Serilog.Sinks.MariaDB.Sinks
             }
         }
 
-        public IEnumerable<(string, object)> GetColumnsAndValues(LogEvent logEvent)
-        {
-            foreach (var column in GetStandardColumnNamesAndValues(logEvent))
-            {
-                yield return column;
-            }
-
-            foreach (var column in ConvertPropertiesToColumn(logEvent.Properties))
-            {
-                yield return column;
-            }
-        }
-
-        private IEnumerable<(string, object)> GetStandardColumnNamesAndValues(LogEvent logEvent)
+        public IEnumerable<KeyValuePair<string, object>> GetColumnsAndValues(LogEvent logEvent)
         {
             foreach (var map in _options.PropertiesToColumnsMapping)
             {
-                if (map.Key.Equals("Message", StringComparison.InvariantCultureIgnoreCase))
+                if (map.Key.Equals("Message", StringComparison.OrdinalIgnoreCase))
                 {
-                    yield return (map.Value, logEvent.RenderMessage(_formatProvider));
+                    yield return new KeyValuePair<string, object>(map.Value, logEvent.RenderMessage(_formatProvider));
                     continue;
                 }
 
-                if (map.Key.Equals("MessageTemplate", StringComparison.InvariantCultureIgnoreCase))
+                if (map.Key.Equals("MessageTemplate", StringComparison.OrdinalIgnoreCase))
                 {
-                    yield return (map.Value, logEvent.MessageTemplate.Text);
+                    yield return new KeyValuePair<string, object>(map.Value, logEvent.MessageTemplate.Text);
                     continue;
                 }
 
-                if (map.Key.Equals("Level", StringComparison.InvariantCultureIgnoreCase))
+                if (map.Key.Equals("Level", StringComparison.OrdinalIgnoreCase))
                 {
-                    yield return (map.Value, _options.EnumsAsInts ? (object)logEvent.Level : logEvent.Level.ToString());
+                    yield return new KeyValuePair<string, object>(map.Value, _options.EnumsAsInts ? (object)logEvent.Level : logEvent.Level.ToString());
                     continue;
                 }
 
-                if (map.Key.Equals("Timestamp", StringComparison.InvariantCultureIgnoreCase))
+                if (map.Key.Equals("Timestamp", StringComparison.OrdinalIgnoreCase))
                 {
-                    yield return (map.Value, _options.TimestampInUtc ? logEvent.Timestamp.ToUniversalTime().DateTime : logEvent.Timestamp.DateTime);
+                    yield return new KeyValuePair<string, object>(map.Value, _options.TimestampInUtc ? logEvent.Timestamp.ToUniversalTime().DateTime : logEvent.Timestamp.DateTime);
                     continue;
                 }
 
-                if (map.Key.Equals("Exception", StringComparison.InvariantCultureIgnoreCase))
+                if (map.Key.Equals("Exception", StringComparison.OrdinalIgnoreCase))
                 {
-                    yield return (map.Value, logEvent.Exception?.ToString());
+                    yield return new KeyValuePair<string, object>(map.Value, logEvent.Exception?.ToString());
                     continue;
                 }
 
-                if (map.Key.Equals("Properties", StringComparison.InvariantCultureIgnoreCase))
+                if (map.Key.Equals("Properties", StringComparison.OrdinalIgnoreCase))
                 {
                     var properties = logEvent.Properties.AsEnumerable();
 
@@ -108,84 +96,98 @@ namespace Serilog.Sinks.MariaDB.Sinks
                             .Where(i => !_options.PropertiesToColumnsMapping.ContainsKey(i.Key));
                     }
 
-                    yield return (map.Value, _options.PropertiesFormatter(
+                    yield return new KeyValuePair<string, object>(map.Value, _options.PropertiesFormatter(
                         new ReadOnlyDictionary<string, LogEventPropertyValue>(
                             properties.ToDictionary(k => k.Key, v => v.Value)
                         )
                     ));
-                }
-            }
-        }
 
-        public string GetInsertCommandText(int rows = 0)
-        {
-            var commandBuilder = new StringBuilder();
-            var columnNames = _options.PropertiesToColumnsMapping
-                .Select(i => i.Value)
-                .ToList();
-
-            commandBuilder.AppendLine($"INSERT INTO {_tableName} ({string.Join(", ", columnNames)})");
-            commandBuilder.AppendLine($"VALUES");
-
-            if (rows == 0)
-            {
-                commandBuilder.Append("(");
-                commandBuilder.AppendLine(string.Join(", ", columnNames.Select(param => $"@{param}")));
-                commandBuilder.Append(")");
-            }
-
-            for (var i = 0; i < rows; i++)
-            {
-                commandBuilder.Append("(");
-                commandBuilder.Append(string.Join(", ", columnNames.Select(param => $"@{param}{i}")));
-                commandBuilder.Append(")");
-
-                if (i != rows - 1)
-                {
-                    commandBuilder.AppendLine(",");
-                }
-            }
-
-            return commandBuilder.ToString();
-        }
-
-        private IEnumerable<(string, object)> ConvertPropertiesToColumn(IReadOnlyDictionary<string, LogEventPropertyValue> properties)
-        {
-            foreach (var property in properties)
-            {
-                if (!_options.PropertiesToColumnsMapping.TryGetValue(property.Key, out var columnName))
-                {
                     continue;
                 }
 
-                if (!(property.Value is ScalarValue scalarValue))
+                if (!logEvent.Properties.TryGetValue(map.Key, out var property))
+                {
+                    yield return new KeyValuePair<string, object>(map.Value, null);
+                    continue;
+                }
+
+                if (!(property is ScalarValue scalarValue))
                 {
                     var sb = new StringBuilder();
                     using (var writer = new StringWriter(sb))
                     {
-                        property.Value.Render(writer, formatProvider: _formatProvider);
+                        property.Render(writer, formatProvider: _formatProvider);
                     }
 
-                    yield return (columnName, sb.ToString());
+                    yield return new KeyValuePair<string, object>(map.Value, sb.ToString());
                     continue;
                 }
 
                 if (scalarValue.Value == null)
                 {
-                    yield return (columnName, DBNull.Value);
+                    yield return new KeyValuePair<string, object>(map.Value, DBNull.Value);
                     continue;
                 }
 
-                var isEnum = scalarValue.Value.GetType().IsEnum;
+                var isEnum = scalarValue.Value is Enum;
 
                 if (isEnum && !_options.EnumsAsInts)
                 {
-                    yield return (columnName, scalarValue.Value.ToString());
+                    yield return new KeyValuePair<string, object>(map.Value, scalarValue.Value.ToString());
                     continue;
                 }
 
-                yield return (columnName, scalarValue.Value);
+                yield return new KeyValuePair<string, object>(map.Value, scalarValue.Value);
             }
+        }
+
+        public string GetBulkInsertStatement(IList<IEnumerable<KeyValuePair<string, object>>> columnValues)
+        {
+            var commandText = new StringBuilder();
+            AppendInsertStatement(commandText);
+
+            for (var i = 0; i < columnValues.Count; i++)
+            {
+                if (i != 0)
+                {
+                    commandText.AppendLine(",");
+                }
+
+                AppendValuesPart(commandText, columnValues[i], i);
+            }
+
+            return commandText.ToString();
+        }
+
+        public string GetInsertStatement(IEnumerable<KeyValuePair<string, object>> columnValues)
+        {
+            var commandText = new StringBuilder();
+
+            AppendInsertStatement(commandText);
+            AppendValuesPart(commandText, columnValues);
+
+            return commandText.ToString();
+        }
+
+        public void AppendInsertStatement(StringBuilder output)
+        {
+            var columnNames = _options.PropertiesToColumnsMapping
+                .Select(i => i.Value)
+                .ToList();
+
+            output.AppendLine($"INSERT INTO {_tableName} ({string.Join(", ", columnNames)})");
+            output.AppendLine("VALUES");
+        }
+
+        public void AppendValuesPart(StringBuilder output, IEnumerable<KeyValuePair<string, object>> columnValues, int? identifier = null)
+        {
+            var parameters = columnValues
+                .Select(i => i.Value == null ? "DEFAULT" : $"@{i.Key}{(identifier.HasValue ? identifier.ToString() : "")}")
+                .ToList();
+
+            output.Append("(");
+            output.Append(string.Join(", ", parameters));
+            output.Append(")");
         }
     }
 }

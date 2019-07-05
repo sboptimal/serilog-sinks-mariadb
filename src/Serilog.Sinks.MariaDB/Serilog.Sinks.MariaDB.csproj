@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard1.6</TargetFramework>
     <VersionPrefix>0.1.0</VersionPrefix>
     <PackageTags>serilog sinks sink mysql mariadb</PackageTags>
     <RepositoryUrl>https://github.com/TeleSoftas/serilog-sinks-mariadb</RepositoryUrl>

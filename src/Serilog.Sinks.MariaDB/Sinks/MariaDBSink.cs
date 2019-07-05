@@ -63,15 +63,19 @@ namespace Serilog.Sinks.MariaDB.Sinks
 
         private async Task BulkInsert(IReadOnlyList<LogEvent> events, MySqlConnection connection)
         {
-            var commandText = _core.GetInsertCommandText(events.Count);
+            var columnValues = events.Select(i => _core.GetColumnsAndValues(i)).ToList();
+            var commandText = _core.GetBulkInsertStatement(columnValues);
 
             using (var cmd = new MySqlCommand(commandText, connection))
             {
-                for (var i = 0; i < events.Count; i++)
+                for (var i = 0; i < columnValues.Count; i++)
                 {
-                    foreach (var (column, value) in _core.GetColumnsAndValues(events[i]))
+                    foreach (var columnValue in columnValues[i])
                     {
-                        cmd.Parameters.AddWithValue($"{column}{i}", value);
+                        if (columnValue.Value != null)
+                        {
+                            cmd.Parameters.AddWithValue($"{columnValue.Key}{i}", columnValue.Value);
+                        }
                     }
                 }
 
@@ -81,17 +85,21 @@ namespace Serilog.Sinks.MariaDB.Sinks
 
         private async Task Insert(IEnumerable<LogEvent> events, MySqlConnection connection)
         {
-            var commandText = _core.GetInsertCommandText();
-
             foreach (var log in events)
             {
                 try
                 {
+                    var columnValues = _core.GetColumnsAndValues(log).ToList();
+                    var commandText = _core.GetInsertStatement(columnValues);
+
                     using (var cmd = new MySqlCommand(commandText, connection))
                     {
-                        foreach (var (column, value) in _core.GetColumnsAndValues(log))
+                        foreach (var columnValue in columnValues)
                         {
-                            cmd.Parameters.AddWithValue(column, value);
+                            if (columnValue.Value != null)
+                            {
+                                cmd.Parameters.AddWithValue(columnValue.Key, columnValue.Value);
+                            }
                         }
 
                         await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);

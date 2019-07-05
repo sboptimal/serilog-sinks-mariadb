@@ -129,7 +129,7 @@ namespace Serilog.Sinks.MariaDB.Sinks
                     continue;
                 }
 
-                var isEnum = scalarValue.Value.GetType().GetTypeInfo().IsEnum;
+                var isEnum = scalarValue.Value is Enum;
 
                 if (isEnum && !_options.EnumsAsInts)
                 {

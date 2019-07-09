@@ -142,6 +142,7 @@ Features of the log table and how we persist data are defined by changing proper
 
 * `PropertiesToColumnsMapping`
 * `PropertiesFormatter`
+* `HashMessageTemplate`
 * `TimestampInUtc`
 * `ExcludePropertiesWithDedicatedColumn`
 * `EnumsAsInts`
@@ -181,6 +182,10 @@ propertiesToColumns["RequestUrl"] = "URL";
 ### PropertiesFormatter
 
 This is a `Func<IReadOnlyDictionary<string, LogEventPropertyValue>, string>` delegate which allows you to modify how data for `Properties` column is formatted. By default we format `Properties` as `JSON`, but if you want to override it - you can using this object property.
+
+### HashMessageTemplate
+
+When `HashMessageTemplate` is `true` (default is `false`), the message template is hashed, using the SHA256 algorithm. This may be more convenient when you want to search logs by message template.
 
 ### TimestampInUtc
 

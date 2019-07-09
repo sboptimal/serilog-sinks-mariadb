@@ -20,6 +20,7 @@ namespace Serilog.Sinks.MariaDB
         };
 
         public Func<IReadOnlyDictionary<string, LogEventPropertyValue>, string> PropertiesFormatter { get; set; } = DefaultFormatter;
+        public bool HashMessageTemplate { get; set; } = false;
         public bool TimestampInUtc { get; set; } = true;
         public bool ExcludePropertiesWithDedicatedColumn { get; set; } = false;
         public bool EnumsAsInts { get; set; } = false;

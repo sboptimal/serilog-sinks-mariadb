@@ -69,11 +69,9 @@ namespace Serilog.Sinks.MariaDB.Sinks
                     {
                         using (var hasher = SHA256.Create())
                         {
-                            var buffer = logEvent.MessageTemplate.Text.Select(i => (byte) i).ToArray();
-                            var hash = hasher.ComputeHash(buffer);
-                            var result = string.Join(string.Empty, hash.Select(i => i.ToString("x2")));
+                            var hash = hasher.ComputeHash(Encoding.Unicode.GetBytes(logEvent.MessageTemplate.Text));
 
-                            yield return new KeyValuePair<string, object>(map.Value, result);
+                            yield return new KeyValuePair<string, object>(map.Value, Convert.ToBase64String(hash));
                             continue;
                         }
                     }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using Serilog.Debugging;
 using Serilog.Events;
@@ -64,6 +65,17 @@ namespace Serilog.Sinks.MariaDB.Sinks
 
                 if (map.Key.Equals("MessageTemplate", StringComparison.OrdinalIgnoreCase))
                 {
+                    if (_options.HashMessageTemplate)
+                    {
+                        using (var hasher = SHA256.Create())
+                        {
+                            var hash = hasher.ComputeHash(Encoding.Unicode.GetBytes(logEvent.MessageTemplate.Text));
+
+                            yield return new KeyValuePair<string, object>(map.Value, Convert.ToBase64String(hash));
+                            continue;
+                        }
+                    }
+
                     yield return new KeyValuePair<string, object>(map.Value, logEvent.MessageTemplate.Text);
                     continue;
                 }

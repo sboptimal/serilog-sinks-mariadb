@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using Serilog.Debugging;
@@ -38,6 +37,10 @@ namespace Serilog.Sinks.MariaDB.Sinks
             _tableName = tableName;
             _formatProvider = formatProvider;
             _options = options ?? throw new ArgumentNullException(nameof(options));
+
+            _options.PropertiesToColumnsMapping = _options.PropertiesToColumnsMapping
+                .Where(i => i.Value != null)
+                .ToDictionary(k => k.Key, v => v.Value);
 
             if (autoCreateTable)
             {

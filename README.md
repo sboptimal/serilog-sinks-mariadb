@@ -169,14 +169,23 @@ For example:
 
 ```csharp
 //Remove built-in Exception mapping, because we have our custom custom "ExceptionDetails" property
-propertiesToColumns.Remove("Exception");
-propertiesToColumns["ExceptionDetails"] = "Exception";
+propertiesToColumns = 
+{
+    ["Exception"] = null,
+    ["ExceptionDetails"] = "Exception"
+};
 
 //Save Timestamp in custom column
-propertiesToColumns["Timestamp"] = "Created";
+propertiesToColumns = 
+{
+    ["Timestamp"] = "Created"
+};
 
 //Dedicated column URL for event property RequestUrl
-propertiesToColumns["RequestUrl"] = "URL";
+propertiesToColumns = 
+{
+    ["RequestUrl"] = "URL"
+};
 ```
 
 ### PropertiesFormatter

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using Serilog.Debugging;
 using Serilog.Events;
 
@@ -15,6 +16,7 @@ namespace Serilog.Sinks.MariaDB.Sinks
         private readonly string _tableName;
         private readonly IFormatProvider _formatProvider;
         private readonly MariaDBSinkOptions _options;
+        private readonly PeriodicCleanup _cleaner;
 
         public MariaDBSinkCore(
             string connectionString,
@@ -33,7 +35,6 @@ namespace Serilog.Sinks.MariaDB.Sinks
             {
                 throw new ArgumentNullException(nameof(tableName));
             }
-
             _tableName = tableName;
             _formatProvider = formatProvider;
             _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -54,7 +55,20 @@ namespace Serilog.Sinks.MariaDB.Sinks
                     SelfLog.WriteLine($"Exception creating table {_tableName}:\n{ex}");
                 }
             }
+
+            if (_options.LogRecordsExpiration.HasValue && _options.LogRecordsExpiration > TimeSpan.Zero && _options.LogRecordsCleanupFrequency > TimeSpan.Zero)
+            {
+                _cleaner = new PeriodicCleanup(connectionString,
+                    tableName,
+                    _options.PropertiesToColumnsMapping["Timespan"],
+                    _options.LogRecordsExpiration.Value,
+                    _options.LogRecordsCleanupFrequency,
+                    _options.TimestampInUtc);
+                _cleaner.Start();
+            }
         }
+
+
 
         public IEnumerable<KeyValuePair<string, object>> GetColumnsAndValues(LogEvent logEvent)
         {
@@ -156,21 +170,21 @@ namespace Serilog.Sinks.MariaDB.Sinks
             }
         }
 
-        public string GetBulkInsertStatement(IList<IEnumerable<KeyValuePair<string, object>>> columnValues)
+        public string GetBulkInsertStatement(IEnumerable<IEnumerable<KeyValuePair<string, object>>> columnValues)
         {
             var commandText = new StringBuilder();
             AppendInsertStatement(commandText);
-
-            for (var i = 0; i < columnValues.Count; i++)
+            int i = 0;
+            foreach (var value in columnValues)
             {
                 if (i != 0)
                 {
                     commandText.AppendLine(",");
                 }
 
-                AppendValuesPart(commandText, columnValues[i], i);
+                AppendValuesPart(commandText, value, i);
+                i++;
             }
-
             return commandText.ToString();
         }
 

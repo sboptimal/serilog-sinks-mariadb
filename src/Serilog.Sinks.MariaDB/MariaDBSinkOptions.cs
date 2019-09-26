@@ -24,6 +24,11 @@ namespace Serilog.Sinks.MariaDB
         public bool TimestampInUtc { get; set; } = true;
         public bool ExcludePropertiesWithDedicatedColumn { get; set; } = false;
         public bool EnumsAsInts { get; set; } = false;
+        /// <summary>
+        /// Older records than this timespan will be periodically deleted
+        /// </summary>
+        public TimeSpan? LogRecordsExpiration { get; set; }
+        public TimeSpan LogRecordsCleanupFrequency { get; set; } = TimeSpan.FromMinutes(12);
 
         private static string DefaultFormatter(IReadOnlyDictionary<string, LogEventPropertyValue> properties)
         {

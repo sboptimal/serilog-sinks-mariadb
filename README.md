@@ -208,6 +208,15 @@ When `ExcludePropertiesWithDedicatedColumn` is `true` (default is `false`), cust
 
 When `EnumsAsInts` is `true` (default is `false`), enums are converted to their coresponding integer values beforse saving, otherwise enums are stored as strings.
 
+### LogRecordsExpiration
+
+When `LogRecordsExpiration` is set (not set by default), sink tries to periodically delete rows older than set interval. Row age is determined by configured `Timestamp` column.
+
+### LogRecordsCleanupFrequency
+
+`LogRecordsCleanupFrequency` controlls how often DELETE SQL command is called on expired rows (default is 12 minutes, only applicable if `LogRecordsExpiration` is set).
+
+
 ## Table Definition
 
 If you don't use automatic creation of the table, you'll have to create a log event table in your database manually. If you use automatic table creation - you'll have to adjust column types, as auto-creation makes all columns as `TEXT`. The table definition shown below reflects the default configuration using automatic table creation without changing any sink options.

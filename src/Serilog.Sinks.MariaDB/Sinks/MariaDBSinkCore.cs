@@ -67,9 +67,6 @@ namespace Serilog.Sinks.MariaDB.Sinks
                 _cleaner.Start();
             }
         }
-
-
-
         public IEnumerable<KeyValuePair<string, object>> GetColumnsAndValues(LogEvent logEvent)
         {
             foreach (var map in _options.PropertiesToColumnsMapping)

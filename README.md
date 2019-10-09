@@ -67,7 +67,9 @@ They also can be configured through _Microsoft.Extensions.Configuration_ sources
                         },
                         "TimestampInUtc": true,
                         "ExcludePropertiesWithDedicatedColumn": true,
-                        "EnumsAsInts": true
+                        "EnumsAsInts": true,
+                        "LogRecordsCleanupFrequency": "0.02:00:00",
+                        "LogRecordsExpiration": "31.00:00:00",
                     }
                 }
             }
@@ -146,6 +148,8 @@ Features of the log table and how we persist data are defined by changing proper
 * `TimestampInUtc`
 * `ExcludePropertiesWithDedicatedColumn`
 * `EnumsAsInts`
+* `LogRecordsExpiration`
+* `LogRecordsCleanupFrequency`
 
 ### PropertiesToColumnsMapping
 
@@ -210,11 +214,11 @@ When `EnumsAsInts` is `true` (default is `false`), enums are converted to their 
 
 ### LogRecordsExpiration
 
-When `LogRecordsExpiration` is set (not set by default), sink tries to periodically delete rows older than set interval. Row age is determined by configured `Timestamp` column.
+When `LogRecordsExpiration` TimeStamp is set (not set by default), sink tries to periodically delete rows older than set interval. Row age is determined by configured `Timestamp` column.
 
 ### LogRecordsCleanupFrequency
 
-`LogRecordsCleanupFrequency` controlls how often DELETE SQL command is called on expired rows (default is 12 minutes, only applicable if `LogRecordsExpiration` is set).
+`LogRecordsCleanupFrequency` TimeStamp controlls how often DELETE SQL command is called on expired rows (default is 12 minutes, only applicable if `LogRecordsExpiration` is set).
 
 
 ## Table Definition

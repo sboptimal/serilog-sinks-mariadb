@@ -19,9 +19,12 @@ namespace Serilog.Sinks.MariaDB
 
         public PeriodicCleanup(string connectionString, string tableName, string columnNameWithTime, TimeSpan recordsExpiration, TimeSpan cleanupFrequency, bool timeInUtc)
         {
+            if (string.IsNullOrEmpty(columnNameWithTime))
+                throw new ArgumentNullException(nameof(columnNameWithTime));
+
+            _columnNameWithTime = columnNameWithTime;
             _connectionString = connectionString;
             _tableName = tableName;
-            _columnNameWithTime = columnNameWithTime;
             _recordsExpiration = recordsExpiration;
             _cleanupFrequency = cleanupFrequency;
             _timeInUtc = timeInUtc;
@@ -29,6 +32,7 @@ namespace Serilog.Sinks.MariaDB
 
         public void Start()
         {
+            //We are delaying first cleanup for 2 seconds just to avoid semi-expensive query at startup
             _cleanupTimer = new Timer(EnsureCleanup, null, 2000, (int)_cleanupFrequency.TotalMilliseconds);
         }
 

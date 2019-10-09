@@ -218,7 +218,7 @@ When `LogRecordsExpiration` TimeStamp is set (not set by default), sink tries to
 
 ### LogRecordsCleanupFrequency
 
-`LogRecordsCleanupFrequency` TimeStamp controlls how often DELETE SQL command is called on expired rows (default is 12 minutes, only applicable if `LogRecordsExpiration` is set).
+`LogRecordsCleanupFrequency` TimeStamp controls how often DELETE SQL command is called on expired rows (default is 12 minutes, only applicable if `LogRecordsExpiration` is set).
 
 
 ## Table Definition

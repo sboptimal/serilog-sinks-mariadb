@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using Serilog.Debugging;
@@ -37,7 +38,6 @@ namespace Serilog.Sinks.MariaDB.Sinks
 
         protected override async Task EmitBatchAsync(IEnumerable<LogEvent> events)
         {
-            var logEvents = events.ToList();
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
@@ -46,39 +46,40 @@ namespace Serilog.Sinks.MariaDB.Sinks
 
                     if (_useBulkInsert)
                     {
-                        await BulkInsert(logEvents, connection).ConfigureAwait(false);
+                        await BulkInsert(events, connection).ConfigureAwait(false);
                     }
                     else
                     {
-                        await Insert(logEvents, connection).ConfigureAwait(false);
+                        await Insert(events, connection).ConfigureAwait(false);
                     }
                 }
                     
             }
             catch (Exception ex)
             {
-                SelfLog.WriteLine("Unable to write {0} log events to the database due to following error: {1}", logEvents.Count(), ex.Message);
+                SelfLog.WriteLine("Unable to write {0} log events to the database due to following error: {1}", events.Count(), ex.Message);
             }
         }
 
-        private async Task BulkInsert(IReadOnlyList<LogEvent> events, MySqlConnection connection)
+        private async Task BulkInsert(IEnumerable<LogEvent> events, MySqlConnection connection)
         {
-            var columnValues = events.Select(i => _core.GetColumnsAndValues(i)).ToList();
-            var commandText = _core.GetBulkInsertStatement(columnValues);
+            var eventData = events.Select(i => _core.GetColumnsAndValues(i)).ToList();
+            var commandText = _core.GetBulkInsertStatement(eventData);
 
             using (var cmd = new MySqlCommand(commandText, connection))
             {
-                for (var i = 0; i < columnValues.Count; i++)
+                int i = 0;
+                foreach (var columnValues in eventData)
                 {
-                    foreach (var columnValue in columnValues[i])
+                    foreach (var columnValue in columnValues)
                     {
                         if (columnValue.Value != null)
                         {
                             cmd.Parameters.AddWithValue($"{columnValue.Key}{i}", columnValue.Value);
                         }
                     }
+                    i++;
                 }
-
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
         }

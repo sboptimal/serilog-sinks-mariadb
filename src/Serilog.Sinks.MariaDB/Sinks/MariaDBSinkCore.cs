@@ -60,7 +60,7 @@ namespace Serilog.Sinks.MariaDB.Sinks
             {
                 _cleaner = new PeriodicCleanup(connectionString,
                     tableName,
-                    _options.PropertiesToColumnsMapping["Timespan"],
+                    _options.PropertiesToColumnsMapping["Timestamp"],
                     _options.LogRecordsExpiration.Value,
                     _options.LogRecordsCleanupFrequency,
                     _options.TimestampInUtc);

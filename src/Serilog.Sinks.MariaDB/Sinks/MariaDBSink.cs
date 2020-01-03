@@ -19,16 +19,15 @@ namespace Serilog.Sinks.MariaDB.Sinks
         private readonly MariaDBSinkCore _core;
         private readonly bool _useBulkInsert;
 
-        public MariaDBSink(
-            string connectionString,
+        public MariaDBSink(string connectionString,
             IFormatProvider formatProvider,
             int batchPostingLimit,
+            int queueSizeLimit,
             TimeSpan period,
             MariaDBSinkOptions options,
             string tableName,
             bool autoCreateTable,
-            bool useBulkInsert
-        ) : base(batchPostingLimit, period)
+            bool useBulkInsert) : base(batchPostingLimit, period, queueSizeLimit)
         {
             _connectionString = connectionString;
             _useBulkInsert = useBulkInsert;

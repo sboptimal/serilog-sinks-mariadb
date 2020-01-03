@@ -216,6 +216,10 @@ When `EnumsAsInts` is `true` (default is `false`), enums are converted to their 
 
 When `LogRecordsExpiration` TimeStamp is set (not set by default), sink tries to periodically delete rows older than set interval. Row age is determined by configured `Timestamp` column.
 
+### DeleteChunkSize
+
+DELETE in MariaDB/MySQL [is an expensive task](https://mariadb.com/kb/en/big-deletes/), so events are deleted by performing multiple DELETE queries with `LIMIT x` clause. Default is 2000 rows.
+
 ### LogRecordsCleanupFrequency
 
 `LogRecordsCleanupFrequency` TimeStamp controls how often DELETE SQL command is called on expired rows (default is 12 minutes, only applicable if `LogRecordsExpiration` is set).

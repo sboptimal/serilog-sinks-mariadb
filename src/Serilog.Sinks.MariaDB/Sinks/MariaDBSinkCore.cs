@@ -63,7 +63,8 @@ namespace Serilog.Sinks.MariaDB.Sinks
                     _options.PropertiesToColumnsMapping["Timestamp"],
                     _options.LogRecordsExpiration.Value,
                     _options.LogRecordsCleanupFrequency,
-                    _options.TimestampInUtc);
+                    _options.TimestampInUtc,
+                    _options.DeleteChunkSize);
                 _cleaner.Start();
             }
         }

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <VersionPrefix>0.2.1</VersionPrefix>
+    <VersionPrefix>1.0.0</VersionPrefix>
     <PackageTags>serilog sinks sink mysql mariadb</PackageTags>
     <RepositoryUrl>https://github.com/TeleSoftas/serilog-sinks-mariadb</RepositoryUrl>
     <PackageProjectUrl>https://github.com/TeleSoftas/serilog-sinks-mariadb</PackageProjectUrl>

@@ -13,9 +13,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		appveyor.yml = appveyor.yml
 		Build.ps1 = Build.ps1
+		CHANGES.md = CHANGES.md
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{13D7B057-6BD4-4430-B950-CF60C20AE3BF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Sinks.MariaDB.Tests", "Tests\Serilog.Sinks.MariaDB.Tests\Serilog.Sinks.MariaDB.Tests.csproj", "{86ADA620-0598-46DF-A30C-05A05551B574}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,12 +32,17 @@ Global
 		{1DC2F81C-C077-4369-92BF-BC9E3D9A63AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DC2F81C-C077-4369-92BF-BC9E3D9A63AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DC2F81C-C077-4369-92BF-BC9E3D9A63AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86ADA620-0598-46DF-A30C-05A05551B574}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86ADA620-0598-46DF-A30C-05A05551B574}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86ADA620-0598-46DF-A30C-05A05551B574}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86ADA620-0598-46DF-A30C-05A05551B574}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1DC2F81C-C077-4369-92BF-BC9E3D9A63AB} = {35F687F1-5A34-4A8A-954C-1501E527C277}
+		{86ADA620-0598-46DF-A30C-05A05551B574} = {13D7B057-6BD4-4430-B950-CF60C20AE3BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52F6A16C-55D2-40DC-9BE5-5254E37C7B59}

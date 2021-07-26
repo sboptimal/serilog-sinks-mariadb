@@ -99,6 +99,37 @@ They also can be configured through _Microsoft.Extensions.Configuration_ sources
 }
 ```
 
+```
+<configuration>
+  
+  <configSections>
+    <section name="MariaDBSinkOptions" type="Nerdle.AutoConfig.Section, Nerdle.AutoConfig" />
+  </configSections>
+  
+  <mariaDBSinkOptions>
+    <hashMessageTemplate>false</hashMessageTemplate>
+    <timestampInUtc>true</timestampInUtc>
+    <excludePropertiesWithDedicatedColumn>false</excludePropertiesWithDedicatedColumn>
+    <enumsAsInts>false</enumsAsInts>
+    <logRecordsExpiration>31.00:00:00</logRecordsExpiration>
+    <logRecordsCleanupFrequency>05:00:00</logRecordsCleanupFrequency>
+    <deleteChunkSize>2000</deleteChunkSize>
+
+    <propertiesToColumnsMapping>
+        <word key="Exception" value="Exception" />
+        <word key="Level" value="LogLevel" />
+        <word key="Message" value="Message" />
+        <word key="MessageTemplate" value="MessageTemplate" />
+        <word key="Properties" value="Properties" />
+        <word key="Timestamp" value="Timestamp" />
+    </propertiesToColumnsMapping>
+</mariaDBSinkOptions>
+
+</configuration>
+```
+* ***Note 1: The properties have to be camel case.***
+* ***Note 2: If using this to apply your own sink options then all properties have to be specified as the defaults don't get applied via this method.***
+
 ## Configuration
 
 ### Sink Configuration Options

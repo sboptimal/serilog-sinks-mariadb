@@ -7,7 +7,7 @@ using Serilog.Formatting.Json;
 
 namespace Serilog.Sinks.MariaDB
 {
-    public class MariaDBSinkOptions
+    public class MariaDBSinkOptions : IMariaDBSinkOptions
     {
         /// <summary>
         /// Event property name to SQL table name mapping
@@ -33,6 +33,9 @@ namespace Serilog.Sinks.MariaDB
         /// If true, uses UTC timestamp instead of local time
         /// </summary>
         public bool TimestampInUtc { get; set; } = true;
+        /// <summary>
+        /// If true, removes properties with dedicated columns from the properties entry
+        /// </summary>
         public bool ExcludePropertiesWithDedicatedColumn { get; set; } = false;
         /// <summary>
         /// If true, uses enum int value instead of name

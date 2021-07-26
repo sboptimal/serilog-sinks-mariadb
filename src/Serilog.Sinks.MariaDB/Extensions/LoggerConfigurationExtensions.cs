@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Nerdle.AutoConfig;
+
 using Serilog.Configuration;
 using Serilog.Events;
 using Serilog.Sinks.MariaDB.Sinks;
+
+using System;
 
 namespace Serilog.Sinks.MariaDB.Extensions
 {
@@ -11,6 +14,8 @@ namespace Serilog.Sinks.MariaDB.Extensions
         /// Adds a sink that writes log events to MariaDB/MySQL table
         /// </summary>
         /// <param name="loggerConfiguration">Options for the sink</param>
+        /// <param name="connectionString">The database connection string</param>
+        /// <param name="formatProvider">The format provider used to supply culture-specific formatting information</param>
         /// <param name="batchPostingLimit">The maximum number of events to include in a single batch</param>
         /// <param name="queueSizeLimit">The maximum number of events that will be held in-memory while waiting to store them to SQL. Beyond this limit, events will be dropped. Default is 10000</param>   
         /// <param name="period">The time to wait between checking for event batches</param>
@@ -45,7 +50,7 @@ namespace Serilog.Sinks.MariaDB.Extensions
                     batchPostingLimit,
                     queueSizeLimit,
                     period ?? MariaDBSink.DefaultPeriod,
-                    options ?? new MariaDBSinkOptions(),
+                    GetMariaDBSinkOptions(options),
                     tableName,
                     autoCreateTable,
                     useBulkInsert
@@ -58,6 +63,8 @@ namespace Serilog.Sinks.MariaDB.Extensions
         /// Adds a sink that writes audit events to MariaDB/MySQL table
         /// </summary>
         /// <param name="loggerAuditConfiguration">Options for the sink</param>
+        /// <param name="connectionString">The database connection string</param>
+        /// <param name="formatProvider">The format provider used to supply culture-specific formatting information</param>
         /// <param name="options">Additional options for audit sink</param>
         /// <param name="tableName">Name of the database table used for storing events</param>
         /// <param name="autoCreateTable">If true the sink will create a SQL table if it doesn't exist</param>
@@ -81,12 +88,44 @@ namespace Serilog.Sinks.MariaDB.Extensions
                 new MariaDBAuditSink(
                     connectionString,
                     formatProvider,
-                    options ?? new MariaDBSinkOptions(),
+                    GetMariaDBSinkOptions(options),
                     tableName,
                     autoCreateTable
                 ),
                 restrictedToMinimumLevel
             );
+        }
+
+        private static MariaDBSinkOptions GetMariaDBSinkOptions(MariaDBSinkOptions options)
+        {
+#if NETFRAMEWORK
+            if (options != null)
+                return options;
+
+            try
+            {
+                var dynamicSinkOptions = AutoConfig.Map<IMariaDBSinkOptions>();
+                return new MariaDBSinkOptions()
+                {
+                    DeleteChunkSize = dynamicSinkOptions.DeleteChunkSize,
+                    EnumsAsInts = dynamicSinkOptions.EnumsAsInts,
+                    ExcludePropertiesWithDedicatedColumn = dynamicSinkOptions.ExcludePropertiesWithDedicatedColumn,
+                    HashMessageTemplate = dynamicSinkOptions.HashMessageTemplate,
+                    LogRecordsCleanupFrequency = dynamicSinkOptions.LogRecordsCleanupFrequency,
+                    LogRecordsExpiration = dynamicSinkOptions.LogRecordsExpiration,
+                    TimestampInUtc = dynamicSinkOptions.TimestampInUtc,
+                    PropertiesToColumnsMapping = dynamicSinkOptions.PropertiesToColumnsMapping,
+                };
+            }
+            catch (Exception e)
+            {
+                // Ignore
+            }
+
+            return new MariaDBSinkOptions();
+#else
+            return options ?? new MariaDBSinkOptions();
+#endif
         }
     }
 }

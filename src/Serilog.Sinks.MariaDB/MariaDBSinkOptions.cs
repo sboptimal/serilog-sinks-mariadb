@@ -28,7 +28,7 @@ namespace Serilog.Sinks.MariaDB
         /// <summary>
         /// If true, uses hash of message template string (to save space)
         /// </summary>
-        public bool HashMessageTemplate { get; set; } = false;
+        public bool HashMessageTemplate { get; set; }
         /// <summary>
         /// If true, uses UTC timestamp instead of local time
         /// </summary>
@@ -36,11 +36,11 @@ namespace Serilog.Sinks.MariaDB
         /// <summary>
         /// If true, removes properties with dedicated columns from the properties entry
         /// </summary>
-        public bool ExcludePropertiesWithDedicatedColumn { get; set; } = false;
+        public bool ExcludePropertiesWithDedicatedColumn { get; set; }
         /// <summary>
         /// If true, uses enum int value instead of name
         /// </summary>
-        public bool EnumsAsInts { get; set; } = false;
+        public bool EnumsAsInts { get; set; }
         /// <summary>
         /// Older records than this timespan will be periodically deleted
         /// </summary>
@@ -48,11 +48,11 @@ namespace Serilog.Sinks.MariaDB
         /// <summary>
         /// Interval of calling delete query to purge old records
         /// </summary>
-        public TimeSpan LogRecordsCleanupFrequency { get; set; } = TimeSpan.FromMinutes(12);
+        public TimeSpan LogRecordsCleanupFrequency { get; set; }
         /// <summary>
         /// Chunk size for DELETE operation (used in `LIMIT x`)
         /// </summary>
-        public int DeleteChunkSize { get; set; } = 2000;
+        public int DeleteChunkSize { get; set; }
 
         private static string DefaultFormatter(IReadOnlyDictionary<string, LogEventPropertyValue> properties)
         {

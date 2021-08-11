@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFrameworks>net461;netstandard2.0;netstandard2.1</TargetFrameworks>
         <PackageId>Serilog.Sinks.MariaDB.Optimal</PackageId>
-        <VersionPrefix>1.0.1</VersionPrefix>
+        <VersionPrefix>1.0.2</VersionPrefix>
         <PackageTags>serilog sinks sink mysql mariadb</PackageTags>
         <RepositoryUrl>https://github.com/sboptimal/serilog-sinks-mariadb</RepositoryUrl>
         <PackageProjectUrl>https://github.com/TeleSoftas/serilog-sinks-mariadb</PackageProjectUrl>

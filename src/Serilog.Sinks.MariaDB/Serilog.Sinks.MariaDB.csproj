@@ -2,7 +2,8 @@
 
     <PropertyGroup>
         <TargetFrameworks>net462;netstandard2.0;netstandard2.1</TargetFrameworks>
-        
+        <LangVersion>latest</LangVersion>
+
         <PackageId>Serilog.Sinks.MariaDB.Optimal</PackageId>
         <PackageTags>serilog sinks sink mysql mariadb</PackageTags>
         <RepositoryUrl>https://github.com/sboptimal/serilog-sinks-mariadb</RepositoryUrl>
@@ -29,6 +30,8 @@
         <RootNamespace>Serilog.Sinks.MariaDB</RootNamespace>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <NoWarn>NU5105</NoWarn>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     </PropertyGroup>
     <ItemGroup>

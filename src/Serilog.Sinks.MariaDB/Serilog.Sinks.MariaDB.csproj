@@ -4,6 +4,8 @@
         <TargetFrameworks>net462;netstandard2.0;netstandard2.1</TargetFrameworks>
         <LangVersion>latest</LangVersion>
 
+        <Version>2.0.2</Version>
+
         <PackageId>Serilog.Sinks.MariaDB.Optimal</PackageId>
         <PackageTags>serilog sinks sink mysql mariadb</PackageTags>
         <RepositoryUrl>https://github.com/sboptimal/serilog-sinks-mariadb</RepositoryUrl>
@@ -44,10 +46,10 @@
         <None Remove="*.snupkg" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
+        <!--<PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        </PackageReference>-->
 
         <PackageReference Include="MySqlConnector" Version="2.3.*" />
         <PackageReference Include="Serilog" Version="4.*" />

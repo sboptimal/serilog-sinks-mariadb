@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net47;net8.0</TargetFrameworks>
+    <TargetFrameworks>net47;net48</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.4.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.4.3" />
-    <PackageReference Include="coverlet.collector" Version="6.0.2">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.0.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.0.2" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Serilog" Version="4.0.0" />
+    <PackageReference Include="Serilog" Version="4.*" />
 
     <ProjectReference Include="..\..\src\Serilog.Sinks.MariaDB\Serilog.Sinks.MariaDB.csproj" />
   </ItemGroup>
@@ -27,9 +27,9 @@
 
     <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' != 'net'">
         <!-- Properties for .NET Core or Net Standard -->
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-        <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.*" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.*" />
+        <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.*" />
 
 
     </ItemGroup>
